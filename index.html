@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI War Room - Dynamic URLs</title>
+    <title>AI War Room - Game Zone Edition</title>
     <style>
         :root {
+            /* ثيم الأسود والذهبي الخاص بـ Game Zone */
             --bg-dark: #0a0a0a;
             --panel-bg: #141414;
             --gold: #d4af37;
+            --gold-hover: #f3c12c;
             --text-light: #e0e0e0;
             --border-color: #2a2a2a;
         }
@@ -29,7 +31,7 @@
             overflow: hidden;
         }
 
-        /* شريط التحكم الرئيسي */
+        /* شريط التحكم الرئيسي العلوي */
         .master-header {
             background-color: var(--panel-bg);
             border-bottom: 2px solid var(--gold);
@@ -39,6 +41,17 @@
             align-items: center;
             justify-content: center;
             height: 70px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .master-title {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 20px;
+            margin-left: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .master-input {
@@ -50,9 +63,13 @@
             color: var(--text-light);
             font-size: 16px;
             outline: none;
+            transition: all 0.3s ease;
         }
 
-        .master-input:focus { border-color: var(--gold); }
+        .master-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+        }
 
         .btn {
             background-color: var(--gold);
@@ -62,18 +79,28 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn:hover { background-color: #f3c12c; transform: scale(1.02); }
-        .master-btn { padding: 10px 25px; font-size: 14px; }
+        .btn:hover {
+            background-color: var(--gold-hover);
+            transform: scale(1.02);
+        }
 
-        /* شبكة النماذج */
+        .master-btn {
+            padding: 10px 25px;
+            font-size: 15px;
+        }
+
+        /* شبكة النماذج (Grid) */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 8px;
-            padding: 8px;
+            gap: 10px;
+            padding: 10px;
             flex-grow: 1;
             height: calc(100vh - 70px);
         }
@@ -85,104 +112,182 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .ai-panel:hover { border-color: var(--gold); }
+        .ai-panel:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+        }
 
         /* شريط التحكم الخاص بكل نافذة */
         .panel-header {
             background-color: #000;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
+        }
+
+        .panel-title {
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 80px;
         }
 
         .url-input {
             flex-grow: 1;
-            padding: 5px 10px;
+            padding: 6px 10px;
             background-color: #1a1a1a;
             border: 1px solid var(--border-color);
-            color: var(--gold);
+            color: #fff;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 13px;
             outline: none;
-            direction: ltr; /* اتجاه الكتابة للروابط من اليسار لليمين */
+            direction: ltr;
+            transition: border-color 0.3s ease;
         }
 
-        .url-input:focus { border-color: var(--gold); }
+        .url-input:focus {
+            border-color: var(--gold);
+        }
         
-        .url-btn { padding: 5px 12px; font-size: 12px; }
+        .url-btn {
+            padding: 6px 15px;
+            font-size: 12px;
+        }
+
+        /* حاوية الموقع */
+        .frame-container {
+            flex-grow: 1;
+            position: relative;
+            background-color: #fff; /* خلفية بيضاء كافتراضي للمواقع */
+        }
 
         iframe {
             width: 100%;
             height: 100%;
             border: none;
-            background-color: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* دعم الشاشات الصغيرة (Responsive) */
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 50vh);
+                overflow-y: auto;
+            }
+            .master-header {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+            }
+            .master-input {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- الشريط الرئيسي لنسخ الأوامر -->
     <div class="master-header">
-        <input type="text" id="masterPrompt" class="master-input" placeholder="اكتب الأمر هنا، ثم اضغط نسخ ليتم وضعه في الحافظة للصقه سريعاً...">
+        <div class="master-title">AI War Room</div>
+        <input type="text" id="masterPrompt" class="master-input" placeholder="اكتب الأمر الموحد هنا، ثم اضغط 'نسخ الأمر' للصقه في جميع النماذج...">
         <button class="btn master-btn" onclick="copyToClipboard()">نسخ الأمر (Copy)</button>
     </div>
 
+    <!-- شبكة النماذج الستة -->
     <div class="grid-container">
+        
+        <!-- النافذة 1: Claude -->
         <div class="ai-panel">
             <div class="panel-header">
+                <span class="panel-title">Claude</span>
                 <input type="text" id="url1" class="url-input" value="https://claude.ai/">
                 <button class="btn url-btn" onclick="loadUrl('frame1', 'url1')">فتح</button>
             </div>
-            <iframe id="frame1" src="https://claude.ai/"></iframe>
+            <div class="frame-container">
+                <iframe id="frame1" src="https://claude.ai/" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
         </div>
 
+        <!-- النافذة 2: DeepSeek -->
         <div class="ai-panel">
             <div class="panel-header">
+                <span class="panel-title">DeepSeek</span>
                 <input type="text" id="url2" class="url-input" value="https://chat.deepseek.com/">
                 <button class="btn url-btn" onclick="loadUrl('frame2', 'url2')">فتح</button>
             </div>
-            <iframe id="frame2" src="https://chat.deepseek.com/"></iframe>
+            <div class="frame-container">
+                <iframe id="frame2" src="https://chat.deepseek.com/" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
         </div>
 
+        <!-- النافذة 3: Gemini -->
         <div class="ai-panel">
             <div class="panel-header">
+                <span class="panel-title">Gemini</span>
                 <input type="text" id="url3" class="url-input" value="https://gemini.google.com/">
                 <button class="btn url-btn" onclick="loadUrl('frame3', 'url3')">فتح</button>
             </div>
-            <iframe id="frame3" src="https://gemini.google.com/"></iframe>
+            <div class="frame-container">
+                <iframe id="frame3" src="https://gemini.google.com/" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
         </div>
 
+        <!-- النافذة 4: ChatGPT -->
         <div class="ai-panel">
             <div class="panel-header">
+                <span class="panel-title">ChatGPT</span>
                 <input type="text" id="url4" class="url-input" value="https://chatgpt.com/">
                 <button class="btn url-btn" onclick="loadUrl('frame4', 'url4')">فتح</button>
             </div>
-            <iframe id="frame4" src="https://chatgpt.com/"></iframe>
+            <div class="frame-container">
+                <iframe id="frame4" src="https://chatgpt.com/" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
         </div>
 
+        <!-- النافذة 5: Kimi -->
         <div class="ai-panel">
             <div class="panel-header">
+                <span class="panel-title">Kimi</span>
                 <input type="text" id="url5" class="url-input" value="https://kimi.moonshot.cn/">
                 <button class="btn url-btn" onclick="loadUrl('frame5', 'url5')">فتح</button>
             </div>
-            <iframe id="frame5" src="https://kimi.moonshot.cn/"></iframe>
+            <div class="frame-container">
+                <iframe id="frame5" src="https://kimi.moonshot.cn/" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
         </div>
 
+        <!-- النافذة 6: MiniMax -->
         <div class="ai-panel">
             <div class="panel-header">
+                <span class="panel-title">MiniMax</span>
                 <input type="text" id="url6" class="url-input" value="https://hailuoai.video/">
                 <button class="btn url-btn" onclick="loadUrl('frame6', 'url6')">فتح</button>
             </div>
-            <iframe id="frame6" src="https://hailuoai.video/"></iframe>
+            <div class="frame-container">
+                <iframe id="frame6" src="https://hailuoai.video/" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
         </div>
+
     </div>
 
+    <!-- أكواد الجافاسكريبت للتحكم بالروابط والنسخ -->
     <script>
-        // دالة نسخ الأمر الرئيسي
+        // دالة نسخ الأمر الرئيسي بضغطة زر
         function copyToClipboard() {
             const promptText = document.getElementById('masterPrompt').value;
             if (!promptText) return;
@@ -191,34 +296,40 @@
                 const btn = document.querySelector('.master-btn');
                 const originalText = btn.innerText;
                 
-                btn.innerText = "تم النسخ بنجاح! ✓";
+                // تأثير بصري عند نجاح النسخ
+                btn.innerText = "تم النسخ! الصق الآن ✓";
                 btn.style.backgroundColor = "#4CAF50"; 
                 btn.style.color = "white";
                 
+                // إعادة الزر لشكله الأصلي
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.style.backgroundColor = "var(--gold)";
                     btn.style.color = "var(--bg-dark)";
                 }, 2000);
-            }).catch(err => console.error('Error copying text: ', err));
+            }).catch(err => {
+                console.error('حدث خطأ أثناء النسخ: ', err);
+                alert("لم نتمكن من النسخ تلقائياً، يرجى نسخه يدوياً.");
+            });
         }
 
-        // دالة تحميل الروابط داخل الإطارات
+        // دالة تحميل الروابط داخل الـ iframe
         function loadUrl(frameId, inputId) {
             let url = document.getElementById(inputId).value.trim();
             
-            // إضافة https:// إذا نسي المستخدم كتابتها
+            // التأكد من وجود البروتوكول http أو https
             if (url !== "" && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = 'https://' + url;
                 document.getElementById(inputId).value = url;
             }
             
+            // تحديث مصدر الإطار
             if (url) {
                 document.getElementById(frameId).src = url;
             }
         }
 
-        // دعم الضغط على زر Enter لفتح الرابط مباشرة
+        // تفعيل زر (Enter) في الكيبورد لفتح الرابط مباشرة
         document.querySelectorAll('.url-input').forEach((input, index) => {
             input.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
