@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI War Room</title>
+    <title>AI War Room - Dynamic URLs</title>
     <style>
         :root {
-            /* ثيم الأسود والذهبي */
             --bg-dark: #0a0a0a;
             --panel-bg: #141414;
             --gold: #d4af37;
@@ -30,8 +29,8 @@
             overflow: hidden;
         }
 
-        /* شريط التحكم العلوي */
-        .header {
+        /* شريط التحكم الرئيسي */
+        .master-header {
             background-color: var(--panel-bg);
             border-bottom: 2px solid var(--gold);
             padding: 15px 20px;
@@ -51,35 +50,28 @@
             color: var(--text-light);
             font-size: 16px;
             outline: none;
-            transition: border-color 0.3s ease;
         }
 
-        .master-input:focus {
-            border-color: var(--gold);
-        }
+        .master-input:focus { border-color: var(--gold); }
 
-        .action-btn {
+        .btn {
             background-color: var(--gold);
             color: var(--bg-dark);
             border: none;
-            padding: 10px 25px;
             border-radius: 5px;
             font-weight: bold;
-            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .action-btn:hover {
-            background-color: #f3c12c;
-            transform: scale(1.02);
-        }
+        .btn:hover { background-color: #f3c12c; transform: scale(1.02); }
+        .master-btn { padding: 10px 25px; font-size: 14px; }
 
-        /* شبكة النماذج السداسية */
+        /* شبكة النماذج */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 أعمدة */
-            grid-template-rows: repeat(2, 1fr);    /* صفين */
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: 8px;
             padding: 8px;
             flex-grow: 1;
@@ -90,100 +82,152 @@
             background-color: var(--panel-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            position: relative;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: border-color 0.3s ease;
         }
 
-        .ai-panel:hover {
-            border-color: var(--gold); /* إضاءة الإطار بالذهبي عند تمرير الماوس */
-        }
+        .ai-panel:hover { border-color: var(--gold); }
 
-        .panel-title {
+        /* شريط التحكم الخاص بكل نافذة */
+        .panel-header {
             background-color: #000;
-            color: var(--gold);
-            padding: 6px 15px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 6px 10px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
         }
 
-        iframe, webview {
+        .url-input {
+            flex-grow: 1;
+            padding: 5px 10px;
+            background-color: #1a1a1a;
+            border: 1px solid var(--border-color);
+            color: var(--gold);
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+            direction: ltr; /* اتجاه الكتابة للروابط من اليسار لليمين */
+        }
+
+        .url-input:focus { border-color: var(--gold); }
+        
+        .url-btn { padding: 5px 12px; font-size: 12px; }
+
+        iframe {
             width: 100%;
             height: 100%;
             border: none;
-            background-color: #fff; /* خلفية بيضاء للنماذج التي لا تدعم الوضع الداكن */
+            background-color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <div class="master-header">
         <input type="text" id="masterPrompt" class="master-input" placeholder="اكتب الأمر هنا، ثم اضغط نسخ ليتم وضعه في الحافظة للصقه سريعاً...">
-        <button class="action-btn" onclick="copyToClipboard()">نسخ الأمر (Copy)</button>
+        <button class="btn master-btn" onclick="copyToClipboard()">نسخ الأمر (Copy)</button>
     </div>
 
     <div class="grid-container">
         <div class="ai-panel">
-            <div class="panel-title"><span>Claude 3.5</span> <span>(المراجع والمنطق)</span></div>
-            <iframe src="https://claude.ai/" title="Claude"></iframe>
+            <div class="panel-header">
+                <input type="text" id="url1" class="url-input" value="https://claude.ai/">
+                <button class="btn url-btn" onclick="loadUrl('frame1', 'url1')">فتح</button>
+            </div>
+            <iframe id="frame1" src="https://claude.ai/"></iframe>
         </div>
 
         <div class="ai-panel">
-            <div class="panel-title"><span>DeepSeek</span> <span>(التحليل العميق)</span></div>
-            <iframe src="https://chat.deepseek.com/" title="DeepSeek"></iframe>
+            <div class="panel-header">
+                <input type="text" id="url2" class="url-input" value="https://chat.deepseek.com/">
+                <button class="btn url-btn" onclick="loadUrl('frame2', 'url2')">فتح</button>
+            </div>
+            <iframe id="frame2" src="https://chat.deepseek.com/"></iframe>
         </div>
 
         <div class="ai-panel">
-            <div class="panel-title"><span>Gemini</span> <span>(البيانات الضخمة)</span></div>
-            <iframe src="https://gemini.google.com/" title="Gemini"></iframe>
+            <div class="panel-header">
+                <input type="text" id="url3" class="url-input" value="https://gemini.google.com/">
+                <button class="btn url-btn" onclick="loadUrl('frame3', 'url3')">فتح</button>
+            </div>
+            <iframe id="frame3" src="https://gemini.google.com/"></iframe>
         </div>
 
         <div class="ai-panel">
-            <div class="panel-title"><span>ChatGPT</span> <span>(المنسق والمدير)</span></div>
-            <iframe src="https://chatgpt.com/" title="ChatGPT"></iframe>
+            <div class="panel-header">
+                <input type="text" id="url4" class="url-input" value="https://chatgpt.com/">
+                <button class="btn url-btn" onclick="loadUrl('frame4', 'url4')">فتح</button>
+            </div>
+            <iframe id="frame4" src="https://chatgpt.com/"></iframe>
         </div>
 
         <div class="ai-panel">
-            <div class="panel-title"><span>Kimi</span> <span>(معالجة المستندات)</span></div>
-            <iframe src="https://kimi.moonshot.cn/" title="Kimi"></iframe>
+            <div class="panel-header">
+                <input type="text" id="url5" class="url-input" value="https://kimi.moonshot.cn/">
+                <button class="btn url-btn" onclick="loadUrl('frame5', 'url5')">فتح</button>
+            </div>
+            <iframe id="frame5" src="https://kimi.moonshot.cn/"></iframe>
         </div>
 
         <div class="ai-panel">
-            <div class="panel-title"><span>MiniMax</span> <span>(المهام السريعة)</span></div>
-            <iframe src="https://hailuoai.video/" title="MiniMax"></iframe>
+            <div class="panel-header">
+                <input type="text" id="url6" class="url-input" value="https://hailuoai.video/">
+                <button class="btn url-btn" onclick="loadUrl('frame6', 'url6')">فتح</button>
+            </div>
+            <iframe id="frame6" src="https://hailuoai.video/"></iframe>
         </div>
     </div>
 
     <script>
-        // دالة لنسخ النص لإرساله للنماذج بسرعة
+        // دالة نسخ الأمر الرئيسي
         function copyToClipboard() {
             const promptText = document.getElementById('masterPrompt').value;
             if (!promptText) return;
 
             navigator.clipboard.writeText(promptText).then(() => {
-                const btn = document.querySelector('.action-btn');
+                const btn = document.querySelector('.master-btn');
                 const originalText = btn.innerText;
                 
-                // تأثير بصري عند نجاح النسخ
                 btn.innerText = "تم النسخ بنجاح! ✓";
                 btn.style.backgroundColor = "#4CAF50"; 
                 btn.style.color = "white";
                 
-                // إعادة الزر لشكله الأصلي بعد ثانيتين
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.style.backgroundColor = "var(--gold)";
                     btn.style.color = "var(--bg-dark)";
                 }, 2000);
-            }).catch(err => {
-                console.error('حدث خطأ أثناء النسخ: ', err);
-            });
+            }).catch(err => console.error('Error copying text: ', err));
         }
+
+        // دالة تحميل الروابط داخل الإطارات
+        function loadUrl(frameId, inputId) {
+            let url = document.getElementById(inputId).value.trim();
+            
+            // إضافة https:// إذا نسي المستخدم كتابتها
+            if (url !== "" && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+                document.getElementById(inputId).value = url;
+            }
+            
+            if (url) {
+                document.getElementById(frameId).src = url;
+            }
+        }
+
+        // دعم الضغط على زر Enter لفتح الرابط مباشرة
+        document.querySelectorAll('.url-input').forEach((input, index) => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    const frameId = 'frame' + (index + 1);
+                    const inputId = 'url' + (index + 1);
+                    loadUrl(frameId, inputId);
+                }
+            });
+        });
     </script>
 
 </body>
