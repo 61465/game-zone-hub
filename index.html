@@ -475,6 +475,66 @@ footer {
   to   { opacity:1; transform:translateY(0); }
 }
 
+/* ══ AI ANNOUNCEMENT BANNER ══ */
+.ai-announce { background:var(--dark-2); padding:60px 5%; }
+.ai-banner {
+  background:linear-gradient(135deg,rgba(212,175,55,.08) 0%,rgba(212,175,55,.02) 100%);
+  border:1px solid rgba(212,175,55,.22);
+  border-radius:var(--radius-xl);
+  padding:52px 48px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.ai-banner::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,.13) 0%,transparent 70%);
+  pointer-events:none;
+}
+.ai-banner-badge {
+  display:inline-block;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  color:#000; font-weight:900; font-size:.72rem;
+  letter-spacing:3px; padding:5px 20px;
+  border-radius:99px; margin-bottom:20px;
+  animation:pulseBadge 2s ease-in-out infinite;
+}
+@keyframes pulseBadge {
+  0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.45);}
+  50%{box-shadow:0 0 0 12px rgba(212,175,55,0);}
+}
+.ai-banner-ico { font-size:3.4rem; margin-bottom:16px; display:block; }
+.ai-banner-h {
+  font-size:clamp(1.5rem,3vw,2.1rem);
+  font-weight:900; color:#fff; margin-bottom:16px;
+}
+.ai-banner-p {
+  color:var(--muted); font-size:.98rem;
+  max-width:640px; margin:0 auto 24px; line-height:1.85;
+}
+.ai-banner-chips {
+  display:flex; gap:10px; flex-wrap:wrap;
+  justify-content:center; margin-bottom:30px;
+}
+
+/* ══ FEATURED SERVICE CARD ══ */
+.svc-featured {
+  grid-column:1 / -1;
+  border-color:rgba(212,175,55,.28);
+  background:linear-gradient(135deg,rgba(212,175,55,.07) 0%,var(--dark-3) 60%);
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:start;
+  gap:22px;
+}
+.svc-featured .svc-icon { font-size:2.2rem; width:68px; height:68px; flex-shrink:0; }
+.svc-featured .svc-title { font-size:1.12rem; }
+.svc-featured .svc-chips { grid-column:2 / 4; margin-top:0; }
+@media (max-width:700px) {
+  .svc-featured { grid-template-columns:1fr; }
+  .svc-featured .svc-chips { grid-column:1; }
+}
+
 /* ══ RESPONSIVE ══ */
 @media (max-width:1024px) {
   .svc-grid  { grid-template-columns:repeat(2,1fr); }
@@ -485,11 +545,19 @@ footer {
   .nav-ul { display:none; }
   .burger { display:flex; }
   .svc-grid { grid-template-columns:1fr; }
+  .svc-featured { grid-template-columns:1fr; }
+  .svc-featured .svc-chips { grid-column:1; }
   .stats-row { grid-template-columns:repeat(2,1fr); }
   .st-item:nth-child(2) { border-right:1px solid var(--border); }
   .why-grid { grid-template-columns:1fr; }
   .contact-box { padding:38px 24px; }
   section { padding:72px 5%; }
+  .ai-announce { padding:48px 5%; }
+  .ai-banner { padding:36px 22px; }
+  .proj-grid { grid-template-columns:1fr; }
+  .hero-tag { font-size:.7rem; }
+  .sec-h2 { font-size:clamp(1.45rem,5.5vw,2rem); }
+  .nav-logo { font-size:.85rem; letter-spacing:3px; }
 }
 @media (max-width:480px) {
   .about-stats { grid-template-columns:1fr; }
@@ -497,6 +565,13 @@ footer {
   .stats-row { grid-template-columns:1fr 1fr; }
   .hero-btns { flex-direction:column; align-items:center; }
   .ct-btns { flex-direction:column; align-items:center; }
+  .ai-banner { padding:28px 16px; }
+  .ai-banner-p { font-size:.88rem; }
+  .ai-banner-h { font-size:1.35rem; }
+  .ai-banner-ico { font-size:2.6rem; }
+  .proj-grid { grid-template-columns:1fr; }
+  .svc-icon { width:46px; height:46px; font-size:1.4rem; }
+  .ct-btns a { width:100%; justify-content:center; }
 }
 </style>
 </head>
@@ -605,12 +680,32 @@ footer {
       <div class="st-lbl">مستخدم نشط</div>
     </div>
     <div class="st-item rv d2">
-      <div class="st-num"><span class="cnt" data-t="6">0</span></div>
+      <div class="st-num"><span class="cnt" data-t="7">0</span><span class="st-plus">+</span></div>
       <div class="st-lbl">خدمة احترافية</div>
     </div>
     <div class="st-item rv d3">
       <div class="st-num"><span class="cnt" data-t="2">0</span><span class="st-plus">+</span></div>
       <div class="st-lbl">سنوات خبرة</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AI ANNOUNCEMENT ══ -->
+<div class="ai-announce">
+  <div class="sec-in">
+    <div class="ai-banner rv">
+      <div class="ai-banner-badge">قريباً</div>
+      <span class="ai-banner-ico">🧠</span>
+      <h2 class="ai-banner-h">نموذج ذكاء اصطناعي عربي بالكامل</h2>
+      <p class="ai-banner-p">Game Zone تستعد لإطلاق أول نموذج ذكاء اصطناعي مصمم خصيصاً للجمهور العربي — يفهم لهجاتك، يتحدث بثقافتك، ويفكر بعقلية الجيمرز العربي. تجربة AI لم تختبرها من قبل.</p>
+      <div class="ai-banner-chips">
+        <span class="chip">عربي 100%</span>
+        <span class="chip">يفهم اللهجات</span>
+        <span class="chip">تعلم آلي متقدم</span>
+        <span class="chip">ثقافة محلية</span>
+        <span class="chip">جيل قادم</span>
+      </div>
+      <a href="mailto:abdarahman10555@gmail.com?subject=أريد معرفة المزيد عن نموذج AI العربي&body=السلام عليكم،%0A%0Aأود الاطلاع على تفاصيل النموذج العربي القادم من Game Zone." class="ct-btn primary">📩 أخبرني عند الإطلاق</a>
     </div>
   </div>
 </div>
@@ -688,6 +783,21 @@ footer {
           <span class="chip">Claude AI</span>
           <span class="chip">أتمتة</span>
           <span class="chip">تجارب مخصصة</span>
+        </div>
+      </div>
+
+      <div class="svc-card rv d6 svc-featured">
+        <div class="svc-icon" style="background:rgba(212,175,55,.15)">✨</div>
+        <div>
+          <div class="svc-title">بناء برامج مع Claude AI — رفيقك الرقمي</div>
+          <div class="svc-desc">نبني لك برامج وتطبيقات مدعومة بـ Claude AI — أذكى نماذج الذكاء الاصطناعي في العالم. من أدوات تحليل البيانات وإدارة المحتوى، إلى منصات تفاعلية كاملة. رفيقك دايم جاهز يحول أفكارك إلى واقع رقمي بسرعة واحترافية لا مثيل لها.</div>
+        </div>
+        <div class="svc-chips">
+          <span class="chip">Claude AI</span>
+          <span class="chip">تطبيقات مخصصة</span>
+          <span class="chip">تحليل ذكي</span>
+          <span class="chip">أتمتة متقدمة</span>
+          <span class="chip">تسليم سريع</span>
         </div>
       </div>
 
