@@ -984,6 +984,9 @@ footer {
 <script>
 /* ── Loader ── */
 window.addEventListener('load', () => {
+  // مسح أي hash من الـ URL حتى لا يقفز المتصفح لأي قسم
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  window.scrollTo(0, 0);
   setTimeout(() => document.getElementById('loader').classList.add('out'), 1900);
 });
 
