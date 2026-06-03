@@ -469,6 +469,93 @@ footer {
 .foot-links a:hover { color:var(--gold); }
 .foot-copy { font-size:.72rem; color:#2a2a2a; }
 
+/* ══ DOWNLOAD SECTION ══ */
+#downloads { background:var(--dark-2); }
+.dl-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:22px;
+}
+.dl-card {
+  background:var(--dark-3); border:1px solid var(--border);
+  border-radius:var(--radius-xl); overflow:hidden;
+  position:relative;
+  transition:border-color .4s, box-shadow .4s;
+}
+.dl-card:hover {
+  border-color:rgba(212,175,55,.35);
+  box-shadow:0 28px 70px rgba(0,0,0,.55);
+}
+.dl-card-hero {
+  height:130px; display:flex;
+  align-items:center; justify-content:center;
+  gap:16px;
+  position:relative; overflow:hidden;
+}
+.dl-card-hero::after {
+  content:''; position:absolute; inset:0;
+  background:rgba(0,0,0,.22);
+}
+.dl-hero-ico { font-size:3.2rem; position:relative; z-index:1; }
+.dl-hero-title {
+  font-size:1.45rem; font-weight:900; color:#fff;
+  letter-spacing:1px; position:relative; z-index:1;
+  text-shadow:0 2px 12px rgba(0,0,0,.7);
+}
+.dl-body { padding:24px; }
+.dl-meta {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:14px; flex-wrap:wrap;
+}
+.dl-ver {
+  padding:3px 12px; border-radius:99px; font-size:.7rem;
+  font-weight:700; background:rgba(212,175,55,.12);
+  border:1px solid rgba(212,175,55,.3); color:var(--gold);
+}
+.dl-badge {
+  padding:3px 10px; border-radius:99px; font-size:.68rem;
+  background:#0d0d0d; border:1px solid #1e1e1e; color:#555;
+}
+.dl-name { font-size:1.05rem; font-weight:700; color:#e0e0e0; margin-bottom:8px; }
+.dl-desc { font-size:.83rem; color:var(--muted); line-height:1.7; margin-bottom:18px; }
+.dl-feats {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:7px 12px; margin-bottom:20px;
+}
+.dl-feat {
+  display:flex; align-items:center; gap:7px;
+  font-size:.78rem; color:#888;
+}
+.dl-feat::before {
+  content:'✦'; color:var(--gold); font-size:.6rem; flex-shrink:0;
+}
+.dl-req {
+  background:#0a0a0a; border:1px solid #1a1a1a;
+  border-radius:12px; padding:14px 16px;
+  margin-bottom:20px; font-size:.76rem; color:#555;
+  line-height:1.8;
+}
+.dl-req strong { color:#888; }
+.dl-btn {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:14px 20px; border-radius:99px;
+  font-family:inherit; font-size:.92rem; font-weight:700;
+  text-decoration:none; cursor:pointer; border:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  color:#000;
+  box-shadow:0 4px 28px rgba(212,175,55,.3);
+  transition:all .3s var(--spring);
+}
+.dl-btn:hover { transform:translateY(-4px) scale(1.02); box-shadow:0 10px 44px rgba(212,175,55,.5); }
+.dl-btn:active { transform:scale(.98); }
+.dl-btn-ico { font-size:1.1rem; }
+.dl-size { font-size:.72rem; font-weight:400; opacity:.7; margin-top:2px; }
+.dl-note {
+  display:flex; align-items:center; gap:6px;
+  font-size:.72rem; color:#444; margin-top:12px;
+  justify-content:center;
+}
+
 /* ══ UTILITIES ══ */
 @keyframes fadeUp {
   from { opacity:0; transform:translateY(18px); }
@@ -555,6 +642,7 @@ footer {
   .ai-announce { padding:48px 5%; }
   .ai-banner { padding:36px 22px; }
   .proj-grid { grid-template-columns:1fr; }
+  .dl-grid { grid-template-columns:1fr; }
   .hero-tag { font-size:.7rem; }
   .sec-h2 { font-size:clamp(1.45rem,5.5vw,2rem); }
   .nav-logo { font-size:.85rem; letter-spacing:3px; }
@@ -591,6 +679,7 @@ footer {
       <li><a href="#about">عن الشركة</a></li>
       <li><a href="#services">خدماتنا</a></li>
       <li><a href="#projects">مشاريعنا</a></li>
+      <li><a href="#downloads">تحميل</a></li>
       <li><a href="#why">لماذا نحن</a></li>
       <li><a href="#contact" class="nav-cta">تواصل معنا</a></li>
     </ul>
@@ -602,8 +691,9 @@ footer {
 <div class="mob-nav" id="mobNav">
   <a href="#about"    onclick="closeNav()">عن الشركة</a>
   <a href="#services" onclick="closeNav()">خدماتنا</a>
-  <a href="#projects" onclick="closeNav()">مشاريعنا</a>
-  <a href="#why"      onclick="closeNav()">لماذا نحن</a>
+  <a href="#projects"  onclick="closeNav()">مشاريعنا</a>
+  <a href="#downloads" onclick="closeNav()">تحميل</a>
+  <a href="#why"       onclick="closeNav()">لماذا نحن</a>
   <a href="#contact"  onclick="closeNav()">تواصل معنا</a>
 </div>
 
@@ -900,6 +990,61 @@ footer {
   </div>
 </section>
 
+<!-- ══ DOWNLOADS ══ -->
+<section id="downloads">
+  <div class="sec-in">
+    <div class="rv">
+      <div class="sec-tag">⬇️ تحميل مجاني</div>
+      <h2 class="sec-h2">منتجاتنا <b>المجانية</b></h2>
+      <p class="sec-p">أدوات مجانية من Game Zone — حمّلها وابدأ على الفور</p>
+    </div>
+    <div class="dl-grid">
+
+      <!-- Game Zone AI Companion -->
+      <div class="dl-card rv tilt">
+        <div class="dl-card-hero" style="background:linear-gradient(135deg,#0d0800,#2a1e00)">
+          <span class="dl-hero-ico">🤖</span>
+          <span class="dl-hero-title">GZ AI</span>
+        </div>
+        <div class="dl-body">
+          <div class="dl-meta">
+            <span class="dl-ver">v6.0</span>
+            <span class="dl-badge">Windows 10/11</span>
+            <span class="dl-badge">مجاني</span>
+          </div>
+          <div class="dl-name">Game Zone AI Companion</div>
+          <div class="dl-desc">مساعد ذكاء اصطناعي يعمل فوق أي لعبة — يحلل الشاشة، يترجم، يجيب على أسئلتك في الوقت الحقيقي دون الخروج من اللعبة.</div>
+          <div class="dl-feats">
+            <div class="dl-feat">تحليل AI للشاشة فوراً</div>
+            <div class="dl-feat">ترجمة فورية للعربية</div>
+            <div class="dl-feat">دعم 6+ نماذج AI</div>
+            <div class="dl-feat">تعرف بصري بالكاميرا</div>
+            <div class="dl-feat">استخراج نص OCR</div>
+            <div class="dl-feat">أسئلة مخصصة للعبة</div>
+            <div class="dl-feat">تشغيل صوتي TTS</div>
+            <div class="dl-feat">لا يؤثر في الأداء</div>
+          </div>
+          <div class="dl-req">
+            <strong>المتطلبات:</strong> Windows 10/11 (x64) · 4GB RAM · الاتصال بالإنترنت للنماذج السحابية
+          </div>
+          <a href="https://github.com/61465/game-zone-hub/releases/download/v6.0/GameZoneAI_v6.0.zip"
+             class="dl-btn" id="dlBtn">
+            <span class="dl-btn-ico">⬇️</span>
+            <span>
+              تحميل مجاني
+              <div class="dl-size">~300 MB · ZIP</div>
+            </span>
+          </a>
+          <div class="dl-note">
+            <span>🔒</span> ملف آمن — لا تثبيت مطلوب، فك الضغط وشغّل
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ══ WHY US ══ -->
 <section id="why">
   <div class="sec-in">
@@ -968,6 +1113,7 @@ footer {
     <div class="foot-links">
       <a href="#about">عن الشركة</a>
       <a href="#services">خدماتنا</a>
+      <a href="#downloads">تحميل</a>
       <a href="https://61465.github.io/game-zone-golden/"       target="_blank">Golden Arena</a>
       <a href="https://61465.github.io/game-zone-archive/"      target="_blank">Archive</a>
       <a href="https://61465.github.io/game-zone-game/"         target="_blank">The Last Save</a>
